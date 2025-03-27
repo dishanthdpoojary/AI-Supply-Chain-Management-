@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supply Chain Optimization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+    <style>
+        .spline-container::before {
+  content: "";
+  position: absolute;
+  bottom: 25px; /* Moves it just above the "Built with Spline" button */
+  right: 30px; /* Adjust horizontally to align with the button */
+  width: 250px; /* Adjust size as needed */
+  height: 50px; /* Adjust height */
+  background: rgba(0, 0, 0, 0.9); /* Match background to hide it */
+  z-index: 10;
+  border-radius: 5px; /* Optional: rounded corners */
+}
+
+
+    </style>
+</head>
+<body class="bg-black text-white font-sans flex flex-col min-h-screen">
+
+    <!-- Navigation Bar -->
+    <nav class="flex justify-between items-center bg-gray-900 shadow-md p-5">
+        <div class="text-2xl font-extrabold text-purple-400">SupplyChainAI</div>
+        <div>
+            <button class="bg-purple-600 hover:bg-purple-700 transition duration-300 text-white px-5 py-2 rounded-lg shadow-md">
+                Log In
+            </button>
+            <button class="border border-purple-600 text-purple-400 hover:bg-purple-600 hover:text-white transition duration-300 px-5 py-2 rounded-lg ml-3 shadow-md">
+                Sign Up
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center flex-1 flex flex-col justify-center items-center py-16 px-4">
+        <h1 class="text-6xl font-extrabold leading-tight text-white">
+            Optimize Your <span class="text-purple-400">Supply Chain</span>
+        </h1>
+        <p class="text-gray-400 mt-4 text-lg max-w-2xl">
+            Enhance efficiency in medical supply distribution with AI-powered routing.  
+            Choose your role to get started!
+        </p>
+        
+        <!-- Buttons -->
+        <div class="mt-8 space-x-4">
+            <button class="bg-purple-600 text-white px-6 py-3 rounded-lg shadow-lg text-lg font-semibold transition-transform transform hover:scale-105 hover:bg-purple-700">
+                For Manufacturer
+            </button>
+            <button class="border border-purple-600 text-purple-400 px-6 py-3 rounded-lg shadow-lg text-lg font-semibold transition-transform transform hover:scale-105 hover:bg-purple-600 hover:text-white">
+                For Clients
+            </button>
+        </div>
+
+        <!-- Spline 3D Viewer -->
+        <div class="mt-12 w-full max-w-4xl h-[400px] flex justify-center spline-container relative">
+            <spline-viewer url="https://prod.spline.design/WcK82tb8TSk9agvM/scene.splinecode" class="w-full h-full"></spline-viewer>
+          </div>
+          
+    </section>
+
+    <!-- Footer always at the bottom -->
+    <footer class="bg-gray-900 text-center py-4 mt-auto">
+        <p class="text-gray-400">&copy; 2025 SupplyChainAI. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
