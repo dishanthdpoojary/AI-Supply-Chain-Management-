@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { background-color: #0a0218; color: white; font-family: 'Poppins', sans-serif; }
+        .navbar { background: linear-gradient(to right, #5a0ca5, #1a032b); box-shadow: 0 4px 10px rgba(90, 12, 165, 0.4); }
+        .card { background: linear-gradient(to right, #1a032b, #2a0645); border: 1px solid #8321d8; box-shadow: 0 4px 10px rgba(131, 33, 216, 0.5); }
+        .button { background: linear-gradient(to right, #8321d8, #5a0ca5); transition: transform 0.3s; }
+        .button:hover { background: linear-gradient(to right, #a341ff, #8321d8); transform: scale(1.05); }
+        .modal { background: rgba(0, 0, 0, 0.8); }
+    </style>
+</head>
+<body>
+    <nav class="navbar p-4 flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-purple-300">Inventory Management</h1>
+        <input type="text" id="search" placeholder="Search Inventory..." class="p-2 rounded text-black">
+    </nav>
+    <div class="p-8 grid grid-cols-2 gap-8" id="inventory-list"></div>
+    <div id="dealer-modal" class="hidden fixed inset-0 flex items-center justify-center modal">
+        <div class="card p-6 rounded-lg text-center">
+            <h2 class="text-xl font-semibold text-purple-300">Dealer Details</h2>
+            <p id="dealer-info" class="mt-4"></p>
+            <button class="mt-4 button px-4 py-2 rounded text-white" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    <script>
+        const inventory = [
+            { name: "Sofa", available: true, dealer: "John's Furniture, +91 9876543210", stock_out_date: "April 15, 2025" },
+            { name: "Table", available: false, dealer: "Elegant Interiors, +91 9123456789" }
+        ];
+        function renderInventory() {
+            const list = document.getElementById('inventory-list');
+            list.innerHTML = inventory.map((item, index) => `
+                <div class="card p-6 rounded-lg">
+                    <h2 class="text-xl font-semibold text-purple-300">${item.name}</h2>
+                    <p class="text-${item.available ? 'green' : 'red'}-400">${item.available ? 'In Stock' : 'Out of Stock'}</p>
+                    <button class="button px-3 py-1 rounded text-white mt-2" onclick="showDealer(${index})">View Dealer</button>
+                    ${item.available 
+                        ? `<button class="button px-3 py-1 rounded text-white mt-2" onclick="showStockReport('${item.stock_out_date}')">Stock Report</button>`
+                        : `<button class="button px-3 py-1 rounded text-white mt-2" onclick="restock('${item.name}')">Restock</button>`}
+                </div>
+            `).join('');
+        }
+        function showDealer(index) {
+            document.getElementById('dealer-info').innerText = inventory[index].dealer;
+            document.getElementById('dealer-modal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('dealer-modal').classList.add('hidden'); }
+        function restock(itemName) {
+            alert(`Request sent to restock ${itemName}.`);
+        }
+        function showStockReport(date) {
+            alert(`Stock is expected to last until ${date}.`);
+        }
+        document.getElementById('search').addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            document.querySelectorAll('#inventory-list > div').forEach(item => {
+                item.style.display = item.innerText.toLowerCase().includes(query) ? '' : 'none';
+            });
+        });
+        renderInventory();
+    </script>
+</body>
+</html>
