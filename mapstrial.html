@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenStreetMap Route Finder</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        #mapContainer { width: 100%; height: 500px; }
+        input, button { padding: 5px; margin: 5px; }
+    </style>
+</head>
+<body>
+    <h3>Find Optimized Route</h3>
+    <input type="text" id="startLocation" placeholder="Enter Start Location">
+    <input type="text" id="endLocation" placeholder="Enter Destination">
+    <button onclick="findRoute()">Find Route</button>
+    <div id="mapContainer"></div>
+
+    <script>
+        var map = L.map('mapContainer').setView([20.5937, 78.9629], 5); // Default to India
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+        var routeLayer, startMarker, endMarker;
+
+        function findRoute() {
+            var startLocation = document.getElementById("startLocation").value;
+            var endLocation = document.getElementById("endLocation").value;
+            
+            if (!startLocation || !endLocation) {
+                alert("Please enter both start and end locations.");
+                return;
+            }
+            
+            Promise.all([
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=IN&q=${startLocation}`)
+                    .then(res => res.json()),
+                fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=IN&q=${endLocation}`)
+                    .then(res => res.json())
+            ]).then(results => {
+                if (!results[0].length || !results[1].length) {
+                    alert("Location not found. Try a different place.");
+                    return;
+                }
+
+                var startCoords = [results[0][0].lat, results[0][0].lon];
+                var endCoords = [results[1][0].lat, results[1][0].lon];
+                
+                if (routeLayer) map.removeLayer(routeLayer);
+                if (startMarker) map.removeLayer(startMarker);
+                if (endMarker) map.removeLayer(endMarker);
+
+                startMarker = L.marker(startCoords).addTo(map).bindPopup("Start").openPopup();
+                endMarker = L.marker(endCoords).addTo(map).bindPopup("End");
+                
+                fetch(`https://router.project-osrm.org/route/v1/driving/${startCoords[1]},${startCoords[0]};${endCoords[1]},${endCoords[0]}?overview=full&geometries=geojson`)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.routes && data.routes.length) {
+                            var routeCoords = data.routes[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                            routeLayer = L.polyline(routeCoords, { color: '#32a89d', weight: 5 }).addTo(map); // Google Maps-like turquoise
+                            map.fitBounds(routeLayer.getBounds());
+                        } else {
+                            alert("No route found.");
+                        }
+                    }).catch(error => {
+                        console.error("Routing Error:", error);
+                        alert("Error retrieving the route. Please try again.");
+                    });
+            }).catch(error => {
+                console.error("Geocoding Error:", error);
+                alert("Error finding locations. Please check inputs.");
+            });
+        }
+    </script>
+</body>
+</html>
