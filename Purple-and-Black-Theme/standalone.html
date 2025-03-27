@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Furniture Material Cost Calculator - Mangalore</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background-color: #5e35b1;
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(94, 53, 177, 0.3);
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .form-container {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      margin-bottom: 2rem;
+      border: 1px solid #333;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #bb86fc;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #444;
+      border-radius: 4px;
+      font-size: 1rem;
+      background-color: #2c2c2c;
+      color: #e0e0e0;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: #bb86fc;
+      box-shadow: 0 0 0 2px rgba(187, 134, 252, 0.25);
+    }
+
+    button {
+      background-color: #7c4dff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #9575cd;
+    }
+
+    .results {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: none;
+      border: 1px solid #333;
+    }
+
+    .results.show {
+      display: block;
+    }
+
+    .location-card {
+      background-color: #2c2c2c;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-left: 5px solid #7c4dff;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .location-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.3);
+      background-color: #333333;
+    }
+
+    .location-card.best-deal {
+      border-left: 5px solid #bb86fc;
+      background-color: #2d2d3a;
+    }
+
+    .location-card.second-best {
+      border-left: 5px solid #9c27b0;
+      background-color: #292933;
+    }
+
+    .location-name {
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      display: inline-block;
+      color: #e0e0e0;
+    }
+
+    .location-name:hover {
+      color: #bb86fc;
+      text-decoration: underline;
+    }
+
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #bb86fc;
+      margin-bottom: 0.5rem;
+    }
+
+    .best-deal-badge {
+      background-color: #bb86fc;
+      color: #121212;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      display: inline-block;
+      margin-left: 0.5rem;
+      font-weight: bold;
+    }
+
+    .second-best-badge {
+      background-color: #9c27b0;
+      color: white;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      display: inline-block;
+      margin-left: 0.5rem;
+    }
+
+    .details {
+      margin-top: 1rem;
+      font-size: 0.875rem;
+      color: #b0b0b0;
+    }
+
+    .details p {
+      margin: 0.25rem 0;
+    }
+
+    .card-actions {
+      display: flex;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .location-card:hover .card-actions {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .action-btn {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      font-size: 0.875rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .view-details-btn {
+      background-color: #2c2c2c;
+      color: #bb86fc;
+      border: 1px solid #bb86fc;
+    }
+
+    .view-details-btn:hover {
+      background-color: #3a2c54;
+    }
+
+    .place-order-btn {
+      background-color: #2c2c2c;
+      color: #cf6bfe;
+      border: 1px solid #cf6bfe;
+    }
+
+    .place-order-btn:hover {
+      background-color: #3a2c54;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      overflow: auto;
+    }
+
+    .modal-content {
+      background-color: #1e1e1e;
+      margin: 10% auto;
+      padding: 2rem;
+      width: 80%;
+      max-width: 600px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      position: relative;
+      border: 1px solid #333;
+    }
+
+    .close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #b0b0b0;
+    }
+
+    .close:hover {
+      color: #bb86fc;
+    }
+
+    .modal-title {
+      margin-top: 0;
+      color: #bb86fc;
+      border-bottom: 1px solid #444;
+      padding-bottom: 1rem;
+    }
+
+    .modal-body {
+      margin-bottom: 1.5rem;
+    }
+
+    .manufacturer-info {
+      margin-bottom: 1.5rem;
+    }
+
+    .manufacturer-info h4 {
+      margin-bottom: 0.5rem;
+      color: #9c27b0;
+    }
+
+    .manufacturer-info p {
+      margin: 0.25rem 0;
+      color: #d0d0d0;
+    }
+
+    .track-button {
+      display: inline-block;
+      background-color: #7c4dff;
+      color: white;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: background-color 0.3s;
+    }
+
+    .track-button:hover {
+      background-color: #9575cd;
+    }
+
+    .success-message {
+      background-color: #2d2d3a;
+      border: 1px solid #bb86fc;
+      color: #bb86fc;
+      padding: 1rem;
+      border-radius: 4px;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-left: 3.5rem;
+    }
+
+    .success-message:before {
+      content: '✓';
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 2rem;
+      font-weight: bold;
+      color: #bb86fc;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: translateY(-50%) scale(1);
+      }
+
+      50% {
+        transform: translateY(-50%) scale(1.2);
+      }
+
+      100% {
+        transform: translateY(-50%) scale(1);
+      }
+    }
+
+    .confirmation-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 1100;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+      display: none;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+
+      to {
+        opacity: 1;
+      }
+    }
+
+    .confirmation-box {
+      background-color: #1e1e1e;
+      padding: 2rem;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 500px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      animation: scaleIn 0.3s ease-in-out;
+      border: 1px solid #bb86fc;
+    }
+
+    @keyframes scaleIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .confirmation-icon {
+      font-size: 4rem;
+      color: #bb86fc;
+      margin-bottom: 1rem;
+      animation: bounce 1s ease infinite;
+    }
+
+    @keyframes bounce {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .confirmation-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #bb86fc;
+      margin-bottom: 1rem;
+    }
+
+    .confirmation-message {
+      margin-bottom: 1.5rem;
+      font-size: 1.1rem;
+      color: #e0e0e0;
+    }
+
+    .confirmation-button {
+      background-color: #7c4dff;
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .confirmation-button:hover {
+      background-color: #9575cd;
+    }
+
+    /* Add confirmation prompt styles */
+    .confirm-prompt-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.85);
+      z-index: 1200;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .confirm-prompt-box {
+      background-color: #1e1e1e;
+      padding: 1.5rem 2rem;
+      border-radius: 8px;
+      text-align: center;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      animation: scaleIn 0.3s ease-in-out;
+      border: 1px solid #7c4dff;
+    }
+
+    .confirm-prompt-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      color: #bb86fc;
+    }
+
+    .confirm-prompt-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .confirm-yes-btn {
+      background-color: #7c4dff;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .confirm-yes-btn:hover {
+      background-color: #9575cd;
+    }
+
+    .confirm-no-btn {
+      background-color: #424242;
+      color: white;
+      border: none;
+      padding: 0.5rem 1.25rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .confirm-no-btn:hover {
+      background-color: #616161;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Furniture Material Cost Calculator</h1>
+      <p>Find the cheapest materials for your furniture manufacturing in Mangalore</p>
+    </header>
+
+    <div class="form-container">
+      <div class="form-group">
+        <label for="furniture-type">Select Furniture Type:</label>
+        <select id="furniture-type">
+          <option value="table">Table</option>
+          <option value="chair">Chair</option>
+          <option value="desk">Desk</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="quantity">Quantity to Produce:</label>
+        <input type="number" id="quantity" value="?" min="1">
+      </div>
+
+      <div class="form-group">
+        <label for="factory-location">Your Factory Location:</label>
+        <select id="factory-location">
+          <option value="baikampady">Baikampady Industrial Area</option>
+          <option value="kuloor">Kuloor</option>
+          <option value="surathkal">Surathkal</option>
+          <option value="panambur">Panambur</option>
+          <option value="kavoor">Kavoor</option>
+        </select>
+      </div>
+
+      <button id="calculate-btn">Calculate Best Prices</button>
+    </div>
+
+    <div id="results" class="results">
+      <h2>Material Cost Comparison</h2>
+      <div id="locations-list"></div>
+    </div>
+  </div>
+
+  <!-- Manufacturer Details Modal -->
+  <div id="manufacturer-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 class="modal-title">Manufacturer Details</h3>
+      <div class="modal-body">
+        <div class="manufacturer-info">
+          <h4>Contact Information</h4>
+          <p><strong>Address:</strong> <span id="manufacturer-address"></span></p>
+          <p><strong>Phone:</strong> <span id="manufacturer-phone"></span></p>
+          <p><strong>Email:</strong> <span id="manufacturer-email"></span></p>
+          <p><strong>Operating Hours:</strong> <span id="manufacturer-hours"></span></p>
+        </div>
+        <div class="manufacturer-info">
+          <h4>Material Information</h4>
+          <p><strong>Wood Types:</strong> <span id="manufacturer-wood-types"></span></p>
+          <p><strong>Nail/Screw Types:</strong> <span id="manufacturer-nail-types"></span></p>
+          <p><strong>Polish Types:</strong> <span id="manufacturer-polish-types"></span></p>
+          <p><strong>Current Stock:</strong> <span id="manufacturer-stock"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Modal -->
+  <div id="order-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h3 class="modal-title">Place Your Order</h3>
+      <div class="modal-body">
+        <div class="success-message">
+          <p>Your order has been placed successfully!</p>
+          <p>Your materials will be dispatched to your factory soon.</p>
+        </div>
+        <div class="manufacturer-info">
+          <h4>Order Details</h4>
+          <p><strong>Supplier:</strong> <span id="order-supplier"></span></p>
+          <p><strong>Order ID:</strong> <span id="order-id"></span></p>
+          <p><strong>Estimated Delivery:</strong> <span id="order-delivery"></span></p>
+          <p><strong>Total Cost:</strong> <span id="order-cost"></span></p>
+        </div>
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <a href="index.html?source=Sultan+Battery&destination=Baikampady+Industrial+Area" class="track-button" target="_blank">Track Route and Delivery Time</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Confirmation Overlay -->
+  <div id="confirmation-overlay" class="confirmation-overlay">
+    <div class="confirmation-box">
+      <div class="confirmation-icon">✓</div>
+      <div class="confirmation-title">Order Placed Successfully!</div>
+      <div class="confirmation-message">
+        Your order has been confirmed and will be processed immediately.
+        Materials will be dispatched to your factory location soon.
+      </div>
+      <button class="confirmation-button" id="confirmation-button">View Order Details</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Prompt Overlay -->
+  <div id="confirm-prompt-overlay" class="confirm-prompt-overlay" style="display: none;">
+    <div class="confirm-prompt-box">
+      <div class="confirm-prompt-title">Are you sure you want to place this order?</div>
+      <div class="confirm-prompt-buttons">
+        <button class="confirm-yes-btn" id="confirm-yes-btn">Yes, Place Order</button>
+        <button class="confirm-no-btn" id="confirm-no-btn">No, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Define the furniture material requirements
+    const furnitureRequirements = {
+      table: {
+        wood: 0.4, // 520 cubic meters / 1300 units
+        nails: 0.1, // 130 kg / 1300 units
+        polish: 0.1, // 130 liters / 1300 units
+      },
+      chair: {
+        wood: 0.15,
+        nails: 0.05,
+        polish: 0.03,
+      },
+      desk: {
+        wood: 0.35,
+        nails: 0.08,
+        polish: 0.08,
+      },
+    };
+
+    // Define the suppliers with their prices and distances from various factory locations
+    const suppliers = [
+      {
+        name: "Sultan Battery",
+        pricePerUnit: {
+          wood: 12000, // Rs per cubic meter
+          nails: 80, // Rs per kg
+          polish: 200, // Rs per liter
+        },
+        distance: {
+          baikampady: 15,
+          kuloor: 12,
+          surathkal: 20,
+          panambur: 18,
+          kavoor: 10,
+        },
+        details: {
+          address: "Sultan Battery Road, Mangalore, Karnataka 575001",
+          phone: "+91 824 245 6789",
+          email: "info@sultanbattery.com",
+          hours: "Mon-Sat: 8:00 AM - 6:00 PM",
+          woodTypes: "Teak, Rosewood, Pine, Oak",
+          nailTypes: "Steel nails, Brass screws, Iron nails",
+          polishTypes: "Shellac, Polyurethane, Varnish",
+          stock: "High availability on all materials"
+        }
+      },
+      {
+        name: "Ullal Beach",
+        pricePerUnit: {
+          wood: 12200, // Rs per cubic meter
+          nails: 85, // Rs per kg
+          polish: 210, // Rs per liter
+        },
+        distance: {
+          baikampady: 25,
+          kuloor: 20,
+          surathkal: 30,
+          panambur: 28,
+          kavoor: 18,
+        },
+        details: {
+          address: "Ullal Beach Road, Mangalore, Karnataka 575020",
+          phone: "+91 824 245 8901",
+          email: "contact@ullalwoodworks.com",
+          hours: "Mon-Sat: 9:00 AM - 7:00 PM",
+          woodTypes: "Teak, Mahogany, Sheesham, Pine",
+          nailTypes: "Galvanized nails, Brass screws, Steel fasteners",
+          polishTypes: "Lacquer, Polyurethane, Water-based finishes",
+          stock: "Medium to high availability"
+        }
+      },
+      {
+        name: "Tannirbhavi Beach",
+        pricePerUnit: {
+          wood: 12500, // Rs per cubic meter
+          nails: 90, // Rs per kg
+          polish: 220, // Rs per liter
+        },
+        distance: {
+          baikampady: 22,
+          kuloor: 17,
+          surathkal: 27,
+          panambur: 25,
+          kavoor: 15,
+        },
+        details: {
+          address: "Tannirbhavi Beach Road, Mangalore, Karnataka 575015",
+          phone: "+91 824 246 7890",
+          email: "sales@tannirbhavimaterials.com",
+          hours: "Mon-Sat: 8:30 AM - 6:30 PM",
+          woodTypes: "Teak, Sal, Cedar, Rosewood",
+          nailTypes: "Stainless steel nails, Brass screws, Aluminum fasteners",
+          polishTypes: "Oil-based, Water-based, Eco-friendly finishes",
+          stock: "Medium availability"
+        }
+      },
+      {
+        name: "Panambur Port",
+        pricePerUnit: {
+          wood: 12300, // Rs per cubic meter
+          nails: 85, // Rs per kg
+          polish: 215, // Rs per liter
+        },
+        distance: {
+          baikampady: 8,
+          kuloor: 12,
+          surathkal: 12,
+          panambur: 3,
+          kavoor: 15,
+        },
+        details: {
+          address: "Panambur Port Area, NH-66, Mangalore, Karnataka 575010",
+          phone: "+91 824 245 3456",
+          email: "info@panamburtimber.com",
+          hours: "Mon-Sat: 8:00 AM - 8:00 PM, Sun: 9:00 AM - 1:00 PM",
+          woodTypes: "Teak, Imported woods, Pine, Oak, Maple",
+          nailTypes: "Imported fasteners, Premium quality nails and screws",
+          polishTypes: "Premium finishes, Imported polishes, Marine-grade finishes",
+          stock: "High availability with import options"
+        }
+      },
+      {
+        name: "Kadri Market",
+        pricePerUnit: {
+          wood: 12900, // Rs per cubic meter
+          nails: 95, // Rs per kg
+          polish: 230, // Rs per liter
+        },
+        distance: {
+          baikampady: 18,
+          kuloor: 10,
+          surathkal: 25,
+          panambur: 20,
+          kavoor: 7,
+        },
+        details: {
+          address: "Kadri Main Road, Mangalore, Karnataka 575002",
+          phone: "+91 824 245 9012",
+          email: "market@kadritimber.com",
+          hours: "Mon-Sat: 9:00 AM - 7:00 PM, Sun: 10:00 AM - 2:00 PM",
+          woodTypes: "Premium Teak, Rosewood, Cedar, Custom woods",
+          nailTypes: "Premium fasteners, Decorative nails, Custom hardware",
+          polishTypes: "Custom finishes, Premium polishes, Designer colors",
+          stock: "Medium to high availability with custom options"
+        }
+      },
+      {
+        name: "Falnir Marketplace",
+        pricePerUnit: {
+          wood: 12800, // Rs per cubic meter
+          nails: 92, // Rs per kg
+          polish: 225, // Rs per liter
+        },
+        distance: {
+          baikampady: 20,
+          kuloor: 15,
+          surathkal: 28,
+          panambur: 22,
+          kavoor: 12,
+        },
+        details: {
+          address: "Falnir Road, Mangalore, Karnataka 575001",
+          phone: "+91 824 246 1234",
+          email: "info@falnirmaterials.com",
+          hours: "Mon-Sat: 9:30 AM - 6:30 PM",
+          woodTypes: "Teak, Rosewood, Sheesham, Imported varieties",
+          nailTypes: "Standard and premium fasteners, Specialty hardware",
+          polishTypes: "Traditional and modern finishes, Interior grade polishes",
+          stock: "Good availability on most materials"
+        }
+      },
+    ];
+
+    // Calculate transportation cost - Rs 200 per km
+    function calculateTransportationCost(distance) {
+      return distance * 200;
+    }
+
+    // Calculate total cost for a supplier
+    function calculateTotalCost(supplier, requirements, quantity, factoryLocation) {
+      // Calculate material costs
+      const woodCost = supplier.pricePerUnit.wood * requirements.wood * quantity;
+      const nailsCost = supplier.pricePerUnit.nails * requirements.nails * quantity;
+      const polishCost = supplier.pricePerUnit.polish * requirements.polish * quantity;
+
+      // Calculate transportation cost
+      const distance = supplier.distance[factoryLocation];
+      const transportCost = calculateTransportationCost(distance);
+
+      // Calculate total cost
+      return woodCost + nailsCost + polishCost + transportCost;
+    }
+
+    // Format number to Indian Rupees
+    function formatToRupees(amount) {
+      return new Intl.NumberFormat('en-IN', {
+        style: 'currency',
+        currency: 'INR',
+        maximumFractionDigits: 0,
+      }).format(amount);
+    }
+
+    // Generate a random order ID
+    function generateOrderID() {
+      return 'ORD-' + Math.floor(Math.random() * 10000000).toString().padStart(7, '0');
+    }
+
+    // Generate a random delivery date (3-7 days from now)
+    function generateDeliveryDate() {
+      const today = new Date();
+      const deliveryDate = new Date(today);
+      deliveryDate.setDate(today.getDate() + 3 + Math.floor(Math.random() * 5));
+
+      return deliveryDate.toLocaleDateString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Show manufacturer details modal
+    function showManufacturerDetails(supplier) {
+      const modal = document.getElementById('manufacturer-modal');
+
+      // Fill in details
+      document.getElementById('manufacturer-address').textContent = supplier.details.address;
+      document.getElementById('manufacturer-phone').textContent = supplier.details.phone;
+      document.getElementById('manufacturer-email').textContent = supplier.details.email;
+      document.getElementById('manufacturer-hours').textContent = supplier.details.hours;
+      document.getElementById('manufacturer-wood-types').textContent = supplier.details.woodTypes;
+      document.getElementById('manufacturer-nail-types').textContent = supplier.details.nailTypes;
+      document.getElementById('manufacturer-polish-types').textContent = supplier.details.polishTypes;
+      document.getElementById('manufacturer-stock').textContent = supplier.details.stock;
+
+      // Show modal
+      modal.style.display = 'block';
+
+      // Close modal when clicking on X
+      const close = modal.querySelector('.close');
+      close.onclick = function() {
+        modal.style.display = 'none';
+      };
+
+      // Close modal when clicking outside
+      window.onclick = function(event) {
+        if (event.target === modal) {
+          modal.style.display = 'none';
+        }
+      };
+    }
+
+    // Show confirmation prompt
+    function showConfirmPrompt(supplier, totalCost) {
+      const confirmPromptOverlay = document.getElementById('confirm-prompt-overlay');
+      confirmPromptOverlay.style.display = 'flex';
+
+      // Setup yes button
+      document.getElementById('confirm-yes-btn').onclick = function() {
+        // Hide confirmation prompt
+        confirmPromptOverlay.style.display = 'none';
+        // Proceed with placing order
+        showOrderModal(supplier, totalCost);
+      };
+
+      // Setup no button
+      document.getElementById('confirm-no-btn').onclick = function() {
+        // Just hide the confirmation prompt
+        confirmPromptOverlay.style.display = 'none';
+      };
+
+      // Close when clicking outside (optional)
+      confirmPromptOverlay.onclick = function(event) {
+        if (event.target === confirmPromptOverlay) {
+          confirmPromptOverlay.style.display = 'none';
+        }
+      };
+    }
+
+    // Show order placement modal
+    function showOrderModal(supplier, totalCost) {
+      // First show confirmation overlay
+      const confirmationOverlay = document.getElementById('confirmation-overlay');
+      confirmationOverlay.style.display = 'flex';
+
+      // Setup confirmation button
+      document.getElementById('confirmation-button').addEventListener('click', function() {
+        // Hide confirmation overlay
+        confirmationOverlay.style.display = 'none';
+
+        // Show detailed order modal
+        const modal = document.getElementById('order-modal');
+
+        // Fill in details
+        document.getElementById('order-supplier').textContent = supplier.name;
+        document.getElementById('order-id').textContent = generateOrderID();
+        document.getElementById('order-delivery').textContent = generateDeliveryDate();
+        document.getElementById('order-cost').textContent = formatToRupees(totalCost);
+
+        // Update tracking link based on factory location
+        const factoryLocation = document.getElementById('factory-location').value;
+        const factoryLocationText = document.getElementById('factory-location').options[document.getElementById('factory-location').selectedIndex].text;
+        const trackButton = modal.querySelector('.track-button');
+        trackButton.href = `index.html?source=${encodeURIComponent(supplier.name)}&destination=${encodeURIComponent(factoryLocationText)}`;
+
+        // Show modal
+        modal.style.display = 'block';
+
+        // Close modal when clicking on X
+        const close = modal.querySelector('.close');
+        close.onclick = function() {
+          modal.style.display = 'none';
+        };
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+          if (event.target === modal) {
+            modal.style.display = 'none';
+          }
+        };
+      });
+
+      // Auto-hide confirmation after 4 seconds if not clicked
+      setTimeout(function() {
+        // Only auto-proceed if the overlay is still visible
+        if (confirmationOverlay.style.display === 'flex') {
+          // Trigger click on the confirmation button
+          document.getElementById('confirmation-button').click();
+        }
+      }, 4000);
+    }
+
+    // Initialize the application
+    function init() {
+      const calculateBtn = document.getElementById('calculate-btn');
+      const furnitureTypeSelect = document.getElementById('furniture-type');
+      const quantityInput = document.getElementById('quantity');
+      const factoryLocationSelect = document.getElementById('factory-location');
+      const resultsDiv = document.getElementById('results');
+      const locationsListDiv = document.getElementById('locations-list');
+
+      calculateBtn.addEventListener('click', () => {
+        // Get selected values
+        const furnitureType = furnitureTypeSelect.value;
+        const quantity = parseInt(quantityInput.value, 10);
+        const factoryLocation = factoryLocationSelect.value;
+
+        // Get material requirements for the selected furniture type
+        const requirements = furnitureRequirements[furnitureType];
+
+        // Calculate total cost for each supplier
+        const suppliersWithCosts = suppliers.map((supplier) => {
+          const totalCost = calculateTotalCost(
+            supplier,
+            requirements,
+            quantity,
+            factoryLocation
+          );
+          return {
+            supplier,
+            totalCost,
+          };
+        });
+
+        // Sort suppliers by total cost
+        suppliersWithCosts.sort((a, b) => a.totalCost - b.totalCost);
+
+        // Show results
+        resultsDiv.classList.add('show');
+
+        // Clear previous results
+        locationsListDiv.innerHTML = '';
+
+        // Generate HTML for each supplier
+        suppliersWithCosts.forEach((item, index) => {
+          const { supplier, totalCost } = item;
+
+          // Calculate material costs separately
+          const woodCost = supplier.pricePerUnit.wood * requirements.wood * quantity;
+          const nailsCost = supplier.pricePerUnit.nails * requirements.nails * quantity;
+          const polishCost = supplier.pricePerUnit.polish * requirements.polish * quantity;
+          const transportCost = calculateTransportationCost(supplier.distance[factoryLocation]);
+
+          // Create location card
+          const locationCard = document.createElement('div');
+          locationCard.className = 'location-card';
+
+          // Add special class for best and second-best deals
+          if (index === 0) {
+            locationCard.classList.add('best-deal');
+          } else if (index === 1) {
+            locationCard.classList.add('second-best');
+          }
+
+          // Create location name with badge if applicable
+          const locationNameDiv = document.createElement('div');
+          locationNameDiv.className = 'location-name';
+          locationNameDiv.textContent = supplier.name;
+
+          // Add click event for manufacturer details
+          locationNameDiv.addEventListener('click', () => {
+            showManufacturerDetails(supplier);
+          });
+
+          if (index === 0) {
+            const bestDealBadge = document.createElement('span');
+            bestDealBadge.className = 'best-deal-badge';
+            bestDealBadge.textContent = 'BEST DEAL';
+            locationNameDiv.appendChild(bestDealBadge);
+          } else if (index === 1) {
+            const secondBestBadge = document.createElement('span');
+            secondBestBadge.className = 'second-best-badge';
+            secondBestBadge.textContent = 'SECOND BEST';
+            locationNameDiv.appendChild(secondBestBadge);
+          }
+
+          // Create price
+          const priceDiv = document.createElement('div');
+          priceDiv.className = 'price';
+          priceDiv.textContent = formatToRupees(totalCost);
+
+          // Create details
+          const detailsDiv = document.createElement('div');
+          detailsDiv.className = 'details';
+
+          detailsDiv.innerHTML = `
+            <p>Wood (${requirements.wood * quantity} cubic meters): ${formatToRupees(woodCost)}</p>
+            <p>Nails/Screws (${requirements.nails * quantity} kg): ${formatToRupees(nailsCost)}</p>
+            <p>Polish (${requirements.polish * quantity} liters): ${formatToRupees(polishCost)}</p>
+            <p>Transportation (${supplier.distance[factoryLocation]} km): ${formatToRupees(transportCost)}</p>
+            <p>Distance from ${factoryLocationSelect.options[factoryLocationSelect.selectedIndex].text}: ${supplier.distance[factoryLocation]} km</p>
+          `;
+
+          // Create card actions
+          const cardActions = document.createElement('div');
+          cardActions.className = 'card-actions';
+
+          // View details button
+          const viewDetailsBtn = document.createElement('button');
+          viewDetailsBtn.className = 'action-btn view-details-btn';
+          viewDetailsBtn.textContent = 'View Manufacturer Details';
+          viewDetailsBtn.addEventListener('click', () => {
+            showManufacturerDetails(supplier);
+          });
+
+          // Place order button
+          const placeOrderBtn = document.createElement('button');
+          placeOrderBtn.className = 'action-btn place-order-btn';
+          placeOrderBtn.textContent = 'Place Order';
+          placeOrderBtn.addEventListener('click', () => {
+            showConfirmPrompt(supplier, totalCost);
+          });
+
+          // Add buttons to card actions
+          cardActions.appendChild(viewDetailsBtn);
+          cardActions.appendChild(placeOrderBtn);
+
+          // Append all elements to the location card
+          locationCard.appendChild(locationNameDiv);
+          locationCard.appendChild(priceDiv);
+          locationCard.appendChild(detailsDiv);
+          locationCard.appendChild(cardActions);
+
+          // Append the location card to the locations list
+          locationsListDiv.appendChild(locationCard);
+        });
+      });
+    }
+
+    // Initialize the application when DOM is loaded
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+
+</html>
