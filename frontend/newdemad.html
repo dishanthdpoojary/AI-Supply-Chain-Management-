@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SupplyChainAI - Demand Forecast</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#faf5ff',
+                            100: '#f3e8ff',
+                            200: '#e9d5ff',
+                            300: '#d8b4fe',
+                            400: '#c084fc',
+                            500: '#a855f7',
+                            600: '#9333ea',
+                            700: '#7e22ce',
+                            800: '#6b21a8',
+                            900: '#581c87',
+                        },
+                        dark: {
+                            900: '#0a0218',
+                            800: '#1a032b',
+                            700: '#2a0645',
+                            600: '#3d0963',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0a0218;
+            background-image: 
+                radial-gradient(at 80% 0%, hsla(273, 86%, 25%, 0.2) 0px, transparent 50%),
+                radial-gradient(at 0% 50%, hsla(273, 86%, 15%, 0.2) 0px, transparent 50%);
+        }
+        
+        .card {
+            background: linear-gradient(145deg, rgba(26, 3, 43, 0.8) 0%, rgba(42, 6, 69, 0.9) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(131, 33, 216, 0.3);
+            box-shadow: 0 10px 25px -5px rgba(90, 12, 165, 0.2), 
+                        0 10px 10px -5px rgba(90, 12, 165, 0.1);
+        }
+        
+        .navbar {
+            background: linear-gradient(to right, #5a0ca5, #1a032b);
+            box-shadow: 0 4px 20px rgba(90, 12, 165, 0.4);
+        }
+        
+        input, select {
+            transition: all 0.3s ease;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+        
+        .glow-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .glow-effect::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, 
+                            rgba(168, 85, 247, 0) 0%, 
+                            rgba(168, 85, 247, 0.2) 50%, 
+                            rgba(168, 85, 247, 0) 100%);
+            transform: translateX(-100%);
+            transition: transform 0.7s ease;
+        }
+        
+        .glow-effect:hover::after {
+            transform: translateX(100%);
+        }
+    </style>
+</head>
+<body class="text-gray-200 font-sans flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="flex navbar justify-between items-center shadow-md p-5 fixed w-full top-0 z-50">
+        <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-primary-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            <div class="text-2xl font-extrabold bg-gradient-to-r from-primary-400 to-primary-600 bg-clip-text text-transparent">SupplyChainAI</div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div id="content" class="p-6 flex-1 mt-24 transition-all duration-300 max-w-4xl mx-auto w-full">
+        <div class="card p-8 rounded-xl w-full max-w-2xl mx-auto">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold bg-gradient-to-r from-primary-400 to-primary-300 bg-clip-text text-transparent mb-2">Demand Forecast</h1>
+                <p class="text-gray-400">Enter product details to predict future demand</p>
+            </div>
+            
+            <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Product Name -->
+                    <div class="space-y-2">
+                        <label for="product" class="block text-sm font-medium text-gray-400">Product Name</label>
+                        <div class="relative">
+                            <select id="product" name="product" class="bg-dark-700 text-white p-3 rounded-lg border border-gray-700 w-full focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none">
+                                <option class="bg-dark-800">Select Item</option>
+                                <option class="bg-dark-800">Table</option>
+                                <option class="bg-dark-800">Chair</option>
+                                <option class="bg-dark-800">Wardrobe</option>
+                                <option class="bg-dark-800">Sofa</option>
+                                <option class="bg-dark-800">Cabinet</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Material -->
+                    <div class="space-y-2">
+                        <label for="material" class="block text-sm font-medium text-gray-400">Material</label>
+                        <div class="relative">
+                            <select id="material" name="material" class="bg-dark-700 text-white p-3 rounded-lg border border-gray-700 w-full focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none">
+                                <option class="bg-dark-800">Select Material</option>
+                                <option class="bg-dark-800">Wood</option>
+                                <option class="bg-dark-800">Glass</option>
+                                <option class="bg-dark-800">Marble</option>
+                                <option class="bg-dark-800">Metal</option>
+                                <option class="bg-dark-800">Plastic</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quantity -->
+                    <div class="space-y-2">
+                        <label for="quantity" class="block text-sm font-medium text-gray-400">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" min="1" class="bg-dark-700 text-white p-3 rounded-lg border border-gray-700 w-full focus:ring-2 focus:ring-primary-500 focus:border-transparent" placeholder="Enter quantity">
+                    </div>
+                    
+                    <!-- Date -->
+                    <div class="space-y-2">
+                        <label for="date" class="block text-sm font-medium text-gray-400">Date</label>
+                        <div class="relative">
+                            <input type="date" id="date" name="date" class="bg-dark-700 text-white p-3 rounded-lg border border-gray-700 w-full focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none">
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="glow-effect bg-gradient-to-r from-primary-600 to-primary-800 text-white font-semibold py-3 px-6 rounded-lg hover:from-primary-700 hover:to-primary-900 transition-all duration-300 w-full flex items-center justify-center space-x-2">
+                    <span>Generate Forecast</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="text-center py-6 text-gray-500 text-sm">
+        <p>© 2025 SupplyChainAI. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Set default date to today
+        document.getElementById('date').valueAsDate = new Date();
+        
+        // Add animation to form elements on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const formElements = document.querySelectorAll('select, input, button');
+            formElements.forEach((el, index) => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = `all 0.5s ease ${index * 0.1}s`;
+                
+                setTimeout(() => {
+                    el.style.opacity = '1';
+                    el.style.transform = 'translateY(0)';
+                }, 100);
+            });
+        });
+
+        // Handle form submission
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const product = document.getElementById('product').value;
+            const material = document.getElementById('material').value;
+            const quantity = document.getElementById('quantity').value;
+            const date = document.getElementById('date').value;
+            
+            // Validate form
+            if (product === 'Select Item' || material === 'Select Material' || !quantity || !date) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Show loading state
+            const submitBtn = document.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>Generating Forecast...</span><svg class="animate-spin h-5 w-5" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>';
+            submitBtn.disabled = true;
+            
+            try {
+                // Call the forecast API
+                const response = await fetch(`/api/forecast?category=${product.toLowerCase()}`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Display results
+                    showForecastResults(data, product, material, quantity, date);
+                } else {
+                    throw new Error(data.error || 'Failed to generate forecast');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error generating forecast: ' + error.message);
+            } finally {
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function showForecastResults(data, product, material, quantity, date) {
+            // Create results container
+            const resultsContainer = document.createElement('div');
+            resultsContainer.className = 'mt-8 p-6 bg-gradient-to-r from-green-900 to-green-800 rounded-lg border border-green-600';
+            resultsContainer.innerHTML = `
+                <h3 class="text-2xl font-bold text-green-300 mb-4">📊 Forecast Results</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-white">
+                    <div>
+                        <h4 class="font-semibold text-green-200 mb-2">Product Details:</h4>
+                        <p><strong>Product:</strong> ${product}</p>
+                        <p><strong>Material:</strong> ${material}</p>
+                        <p><strong>Quantity:</strong> ${quantity}</p>
+                        <p><strong>Date:</strong> ${date}</p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold text-green-200 mb-2">AI Predictions:</h4>
+                        <p><strong>Model:</strong> ${data.model_used}</p>
+                        <p><strong>Next 5 Periods:</strong></p>
+                        <ul class="list-disc list-inside ml-2">
+                            ${data.forecast.map((value, index) => `<li>Period ${index + 1}: ${value.toFixed(2)}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-4 p-4 bg-green-800 rounded-lg">
+                    <h4 class="font-semibold text-green-200 mb-2">📈 Accuracy Metrics:</h4>
+                    <div class="grid grid-cols-3 gap-4 text-sm">
+                        <div><strong>MAE:</strong> ${data.accuracy_metrics.MAE.toFixed(4)}</div>
+                        <div><strong>MSE:</strong> ${data.accuracy_metrics.MSE.toFixed(4)}</div>
+                        <div><strong>RMSE:</strong> ${data.accuracy_metrics.RMSE.toFixed(4)}</div>
+                    </div>
+                </div>
+                <button onclick="this.parentElement.remove()" class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
+                    Close Results
+                </button>
+            `;
+            
+            // Remove any existing results
+            const existingResults = document.querySelector('.mt-8.p-6.bg-gradient-to-r.from-green-900');
+            if (existingResults) {
+                existingResults.remove();
+            }
+            
+            // Add results to the page
+            document.querySelector('.card').appendChild(resultsContainer);
+            
+            // Scroll to results
+            resultsContainer.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

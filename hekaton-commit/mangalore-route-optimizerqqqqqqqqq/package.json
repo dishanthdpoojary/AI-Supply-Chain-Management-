@@ -19,7 +19,6 @@
     "supply chain"
   ],
   "author": "",
-  "license": "MIT",
   "dependencies": {
     "leaflet": "^1.9.4",
     "leaflet-routing-machine": "^3.2.12",
